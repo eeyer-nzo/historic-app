@@ -1,19 +1,25 @@
-//
-//  ContentView.swift
-//  historic app
-//
-//  Created by T Krobot on 28/10/23.
-//
-
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showSheet = false
+
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("bye world")
+            Text("MAP")
+                .font(.largeTitle)
+                .padding()
+                
+            Button("Show Sheet") {
+                // Toggle the showSheet state
+                showSheet.toggle()
+            }
+            .padding()
+
+            // Example of a sheet
+            .sheet(isPresented: $showSheet) {
+                Text("Sentosa!")
+                    .padding()
+            }
         }
         .padding()
     }
