@@ -22,31 +22,101 @@ struct MapView: UIViewRepresentable {
 
 struct ContentView: View {
     @State private var showSheet = false
+    @State private var sheetPosition: CGFloat = UIScreen.main.bounds.height // Initially off-screen
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                MapView()
-                    .edgesIgnoringSafeArea(.all) // Ignore safe area edges
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .offset(y: -geometry.safeAreaInsets.top) // Adjust the top offset
+        VStack(spacing: 0) {
+            MapView()
+                .edgesIgnoringSafeArea(.all) // Ignore safe area edges
+                .frame(maxWidth: 400, maxHeight: 400)
+                //.offset(y: -sheetPosition) // Adjust the top offset
 
-                Spacer() // Move the rest of the content to the bottom
-
-                Button("Show Sheet") {
-                    // Toggle the showSheet state
-                    showSheet.toggle()
+            // Swipe-up gesture to show the sheet
+            Rectangle()
+                .fill(Color.clear)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        sheetPosition = 0 // Bring the sheet on-screen
+                        showSheet = true
+                    }
                 }
-                .padding()
 
-                // Example of a sheet
-                .sheet(isPresented: $showSheet) {
-                    Text("Sentosa!")
-                        .padding()
-                }
-            }
+            Spacer() // Move the rest of the content to the bottom
         }
+        .gesture(
+            DragGesture()
+                .onChanged { value in
+                    // Update sheet position based on drag gesture
+                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                }
+                .onEnded { value in
+                    // Determine whether to show or hide the sheet based on drag distance
+                    let threshold: CGFloat = -50
+                    if value.translation.height < threshold {
+                        withAnimation {
+                            sheetPosition = -UIScreen.main.bounds.height
+                            showSheet = false
+                        }
+                    } else {
+                        withAnimation {
+                            sheetPosition = 0
+                            showSheet = true
+                        }
+                    }
+                }
+        )
         .edgesIgnoringSafeArea(.top) // Ignore safe area edges for the VStack
+
+        // Example of a sheet
+        .overlay(
+            CustomSheetView()
+                .offset(y: sheetPosition)
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            // Update sheet position based on drag gesture
+                            sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                        }
+                        .onEnded { value in
+                            // Determine whether to show or hide the sheet based on drag distance
+                            let threshold: CGFloat = -50
+                            if value.translation.height < threshold {
+                                withAnimation {
+                                    sheetPosition = -UIScreen.main.bounds.height
+                                    showSheet = false
+                                }
+                            } else {
+                                withAnimation {
+                                    sheetPosition = 0
+                                    showSheet = true
+                                }
+                            }
+                        }
+                )
+        )
+    }
+}
+
+struct CustomSheetView: View {
+    var body: some View {
+        VStack {
+            HandleBar()
+            Text("Swipe up to dismiss")
+                .padding()
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.white)
+        .cornerRadius(10)
+    }
+}
+
+struct HandleBar: View {
+    var body: some View {
+        RoundedRectangle(cornerRadius: 3)
+            .frame(width: 40, height: 5)
+            .foregroundColor(Color.gray)
+            .padding()
     }
 }
 
