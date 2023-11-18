@@ -6,6 +6,8 @@ struct MapView: UIViewRepresentable {
         MKMapView()
     }
     
+
+    
     func updateUIView(_ uiView: MKMapView, context: Context) {
         // You can customize the map view here if needed
         let coordinate = CLLocationCoordinate2D(latitude: 1.2540, longitude: 103.8234)
@@ -87,7 +89,7 @@ struct ContentView: View {
                             if value.translation.height < threshold {
                                 withAnimation {
                                    //i think this makes the sheet disappear
-                                    sheetPosition = -UIScreen.main.bounds.height+400
+                                    sheetPosition = -UIScreen.main.bounds.height+525
                                     showSheet = false
                                 }
                             } else {
@@ -104,9 +106,11 @@ struct ContentView: View {
 // code below edits sheet view
 struct CustomSheetView: View {
     var body: some View {
+        @State var textEntered = ""
         VStack {
             HandleBar()
-            Text("Swipe up to dismiss")
+            TextField("Location", text: $textEntered)
+                                .textFieldStyle(.roundedBorder)
         }
         .frame(maxWidth: .infinity, maxHeight: 100)
         .background(Color.white)
