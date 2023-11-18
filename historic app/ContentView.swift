@@ -22,40 +22,41 @@ struct MapView: UIViewRepresentable {
 
 struct ContentView: View {
     @State private var showSheet = false
-    @State private var sheetPosition: CGFloat = UIScreen.main.bounds.height // Initially off-screen
+    @State private var sheetPosition: CGFloat = 0 // Initially on-screen
 
     var body: some View {
         VStack(spacing: 0) {
             MapView()
                 .edgesIgnoringSafeArea(.all) // Ignore safe area edges
                 .frame(maxWidth: 400, maxHeight: 400)
-                //.offset(y: -sheetPosition) // Adjust the top offset
+                //.offset(y: sheetPosition) // Adjust the top offset
 
             // Swipe-up gesture to show the sheet
             Rectangle()
-                .fill(Color.clear)
+                .size(CGSize(width: 500.0, height: 1325.0))
+                .offset(y: sheetPosition)
+                .fill(Color.blue)
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    withAnimation {
-                        sheetPosition = 0 // Bring the sheet on-screen
-                        showSheet = true
-                    }
-                }
-
-            Spacer() // Move the rest of the content to the bottom
+            Text("Searchbar")
+                .padding()
+                .foregroundColor(.black)
+                .frame(maxWidth: .infinity, alignment: .top)
+                
         }
         .gesture(
             DragGesture()
                 .onChanged { value in
                     // Update sheet position based on drag gesture
-                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                    withAnimation{
+                        sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                    }
                 }
                 .onEnded { value in
                     // Determine whether to show or hide the sheet based on drag distance
                     let threshold: CGFloat = -50
                     if value.translation.height < threshold {
                         withAnimation {
-                            sheetPosition = -UIScreen.main.bounds.height
+                            sheetPosition = 0
                             showSheet = false
                         }
                     } else {
@@ -76,14 +77,17 @@ struct ContentView: View {
                     DragGesture()
                         .onChanged { value in
                             // Update sheet position based on drag gesture
-                            sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                                withAnimation{
+                                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                            }
                         }
                         .onEnded { value in
                             // Determine whether to show or hide the sheet based on drag distance
-                            let threshold: CGFloat = -50
+                            let threshold: CGFloat = -100
                             if value.translation.height < threshold {
                                 withAnimation {
-                                    sheetPosition = -UIScreen.main.bounds.height
+                                   //i think this makes the sheet disappear
+                                    sheetPosition = -UIScreen.main.bounds.height+400
                                     showSheet = false
                                 }
                             } else {
@@ -97,15 +101,14 @@ struct ContentView: View {
         )
     }
 }
-
+// code below edits sheet view
 struct CustomSheetView: View {
     var body: some View {
         VStack {
             HandleBar()
             Text("Swipe up to dismiss")
-                .padding()
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: 100)
         .background(Color.white)
         .cornerRadius(10)
     }
