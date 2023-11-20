@@ -7,7 +7,15 @@ struct MapView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        // Your existing code for updating the map view
+        let coordinate = CLLocationCoordinate2D(latitude: 1.2540, longitude: 103.8234)
+              let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+              let region = MKCoordinateRegion(center: coordinate, span: span)
+              uiView.setRegion(region, animated: true)
+              
+              let annotation = MKPointAnnotation()
+              annotation.coordinate = coordinate
+              annotation.title = "Sentosa"
+              uiView.addAnnotation(annotation)
     }
 }
 
