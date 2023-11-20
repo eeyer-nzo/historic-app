@@ -5,139 +5,156 @@ struct MapView: UIViewRepresentable {
     func makeUIView(context: Context) -> MKMapView {
         MKMapView()
     }
-    
 
-    
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        // You can customize the map view here if needed
-        let coordinate = CLLocationCoordinate2D(latitude: 1.2540, longitude: 103.8234)
-        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        uiView.setRegion(region, animated: true)
-
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = "Sentosa"
-        uiView.addAnnotation(annotation)
+        // Your existing code for updating the map view
     }
 }
 
 struct ContentView: View {
     @State private var showSheet = false
     @State private var sheetPosition: CGFloat = 0 // Initially on-screen
+    @State private var textEntered = ""
 
     var body: some View {
-        VStack(spacing: 0) {
-            MapView()
-                .edgesIgnoringSafeArea(.all) // Ignore safe area edges
-                .frame(maxWidth: 600, maxHeight: 600)
-                //.offset(y: sheetPosition) // Adjust the top offset
+        NavigationView {
+            VStack(spacing: 0) {
+                MapView()
+                    .edgesIgnoringSafeArea(.all)
+                    .frame(maxWidth: 600, maxHeight: 600)
 
-            // Swipe-up gesture to show the sheet
-            Rectangle()
-                .size(CGSize(width: 500.0, height: 1300.0))
-                .offset(y: sheetPosition + 50)
-                .fill(Color.blue)
-                
-                .frame(maxWidth: .infinity, maxHeight: 1000 ,alignment: .center)
-             
-            //THE BUTTONS
-            
-            Button{
-                
-            }label: {
-                Text("Button")
-                    .font(.largeTitle)
-                    .foregroundStyle(.black)
-                    .padding(10)
-                    .background(.yellow)
-                    .cornerRadius(10)
-                    .offset(y: sheetPosition)
-            }
-            Spacer()
-            Spacer()
-            Spacer()
-            Button{
-                
-            }label: {
-                Text("Button")
-                    .font(.largeTitle)
-                    .foregroundStyle(.black)
-                    .padding(10)
-                    .background(.yellow)
-                    .cornerRadius(10)
-                    .offset(y: sheetPosition)
-            }
-           
-            //BUTTON ENDS
-        }
-        .gesture(
-            DragGesture()
-                .onChanged { value in
-                    // Update sheet position based on drag gesture
-                    withAnimation{
-                        sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
-                    }
-                }
-                .onEnded { value in
-                    // Determine whether to show or hide the sheet based on drag distance
-                    let threshold: CGFloat = -50
-                    if value.translation.height < threshold {
-                        withAnimation {
-                            sheetPosition = 0
-                            showSheet = false
-                        }
-                    } else {
-                        withAnimation {
-                            sheetPosition = 0
-                            showSheet = true
+                Rectangle()
+                    .size(CGSize(width: 500.0, height: 1300.0))
+                    .offset(y: sheetPosition + 50)
+                    .fill(Color.blue)
+                    .frame(maxWidth: .infinity, maxHeight: 1000, alignment: .center)
+
+                // LazyVGrid for buttons
+                LazyVGrid(columns: Array(repeating: GridItem(), count: 1), spacing: 10) {
+                    NavigationLink(destination: Text("Button 1 Destination")) {
+                        Button {
+                            // Action for Button 1
+                        } label: {
+                            Text("Button 1")
+                                .font(.largeTitle)
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(Color.yellow)
+                                .cornerRadius(10)
                         }
                     }
-                }
-        )
-        .edgesIgnoringSafeArea(.top) // Ignore safe area edges for the VStack
 
-        // Example of a sheet
-        .overlay(
-            CustomSheetView()
+                    NavigationLink(destination: Text("Button 2 Destination")) {
+                        Button {
+                            // Action for Button 2
+                        } label: {
+                            Text("Button 2")
+                                .font(.largeTitle)
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(Color.yellow)
+                                .cornerRadius(10)
+                        }
+                    }
+                    
+                    NavigationLink(destination: Text("Button 3 Destination")) {
+                        Button {
+                            // Action for Button 3
+                        } label: {
+                            Text("Button 3")
+                                .font(.largeTitle)
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(Color.yellow)
+                                .cornerRadius(10)
+                        }
+                    }
+                    
+                    NavigationLink(destination: Text("Button 4 Destination")) {
+                        Button {
+                            // Action for Button 4
+                        } label: {
+                            Text("Button 4")
+                                .font(.largeTitle)
+                                .foregroundColor(.black)
+                                .padding(10)
+                                .background(Color.yellow)
+                                .cornerRadius(10)
+                        }
+                    }
+
+                    // Add more buttons as needed
+                }
                 .offset(y: sheetPosition)
-                .gesture(
-                    DragGesture()
-                        .onChanged { value in
-                            // Update sheet position based on drag gesture
-                            withAnimation{
-                                sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+
+                Spacer()
+            }
+            .gesture(
+                DragGesture()
+                    .onChanged { value in
+                        // Update sheet position based on drag gesture
+                        withAnimation {
+                            sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                        }
+                    }
+                    .onEnded { value in
+                        // Determine whether to show or hide the sheet based on drag distance
+                        let threshold: CGFloat = -50
+                        if value.translation.height < threshold {
+                            withAnimation {
+                                sheetPosition = 0
+                                showSheet = false
+                            }
+                        } else {
+                            withAnimation {
+                                sheetPosition = 0
+                                showSheet = true
                             }
                         }
-                        .onEnded { value in
-                            // Determine whether to show or hide the sheet based on drag distance
-                            let threshold: CGFloat = -100
-                            if value.translation.height < threshold {
+                    }
+            )
+            .edgesIgnoringSafeArea(.top)
+            .overlay(
+                CustomSheetView(textEntered: $textEntered)
+                    .offset(y: sheetPosition)
+                    .gesture(
+                        DragGesture()
+                            .onChanged { value in
+                                // Update sheet position based on drag gesture
                                 withAnimation {
-                                   //i think this makes the sheet disappear
-                                    sheetPosition = -UIScreen.main.bounds.height+525
-                                    showSheet = false
-                                }
-                            } else {
-                                withAnimation {
-                                    sheetPosition = 0
-                                    showSheet = true
+                                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
                                 }
                             }
-                        }
-                )
-        )
+                            .onEnded { value in
+                                // Determine whether to show or hide the sheet based on drag distance
+                                let threshold: CGFloat = -100
+                                if value.translation.height < threshold {
+                                    withAnimation {
+                                        sheetPosition = -UIScreen.main.bounds.height + 525
+                                        showSheet = false
+                                    }
+                                } else {
+                                    withAnimation {
+                                        sheetPosition = 0
+                                        showSheet = true
+                                    }
+                                }
+                            }
+                    )
+            )
+        }
     }
 }
-// code below edits sheet view
+
+// Extracted CustomSheetView to a separate view structure
 struct CustomSheetView: View {
-    @State private var textEntered = ""
+    @Binding var textEntered: String
+
     var body: some View {
-        
         VStack {
             HandleBar()
             TextField("Location", text: $textEntered)
-                                .textFieldStyle(.roundedBorder)
+                .textFieldStyle(.roundedBorder)
         }
         .frame(maxWidth: .infinity, maxHeight: 100)
         .background(Color.white)
