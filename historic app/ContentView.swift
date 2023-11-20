@@ -30,20 +30,46 @@ struct ContentView: View {
         VStack(spacing: 0) {
             MapView()
                 .edgesIgnoringSafeArea(.all) // Ignore safe area edges
-                .frame(maxWidth: 400, maxHeight: 400)
+                .frame(maxWidth: 600, maxHeight: 600)
                 //.offset(y: sheetPosition) // Adjust the top offset
 
             // Swipe-up gesture to show the sheet
             Rectangle()
-                .size(CGSize(width: 500.0, height: 1325.0))
-                .offset(y: sheetPosition)
+                .size(CGSize(width: 500.0, height: 1300.0))
+                .offset(y: sheetPosition + 50)
                 .fill(Color.blue)
-                .contentShape(Rectangle())
-            Text("Searchbar")
-                .padding()
-                .foregroundColor(.black)
-                .frame(maxWidth: .infinity, alignment: .top)
                 
+                .frame(maxWidth: .infinity, maxHeight: 1000 ,alignment: .center)
+             
+            //THE BUTTONS
+            
+            Button{
+                
+            }label: {
+                Text("Button")
+                    .font(.largeTitle)
+                    .foregroundStyle(.black)
+                    .padding(10)
+                    .background(.yellow)
+                    .cornerRadius(10)
+                    .offset(y: sheetPosition)
+            }
+            Spacer()
+            Spacer()
+            Spacer()
+            Button{
+                
+            }label: {
+                Text("Button")
+                    .font(.largeTitle)
+                    .foregroundStyle(.black)
+                    .padding(10)
+                    .background(.yellow)
+                    .cornerRadius(10)
+                    .offset(y: sheetPosition)
+            }
+           
+            //BUTTON ENDS
         }
         .gesture(
             DragGesture()
@@ -79,8 +105,8 @@ struct ContentView: View {
                     DragGesture()
                         .onChanged { value in
                             // Update sheet position based on drag gesture
-                                withAnimation{
-                                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
+                            withAnimation{
+                                sheetPosition = max(min(value.translation.height, 0), -UIScreen.main.bounds.height)
                             }
                         }
                         .onEnded { value in
@@ -105,8 +131,9 @@ struct ContentView: View {
 }
 // code below edits sheet view
 struct CustomSheetView: View {
+    @State private var textEntered = ""
     var body: some View {
-        @State var textEntered = ""
+        
         VStack {
             HandleBar()
             TextField("Location", text: $textEntered)
