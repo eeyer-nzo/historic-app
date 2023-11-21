@@ -1,7 +1,6 @@
 import SwiftUI
 import MapKit
 //You should know
-
 //IDK someone fill this in
 struct MapView: UIViewRepresentable {
     @Binding var zoomInOut: Double
@@ -45,12 +44,31 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.top)
             
             VStack{
-                
+                 
                 VStack(spacing: 0) {
-                    
-                    HandleBar()
-                        .frame(maxWidth: .infinity)
-                        .background(.black.opacity(0.000001))
+                    HStack{
+                        Button{
+                            if zoomInOut > 0.0001{
+                                zoomInOut -= 0.001
+                            }
+                        }label: {
+                            Image(systemName: "plus.magnifyingglass")
+                                .padding(10)
+                        }
+                        
+                        HandleBar()
+                            .frame(maxWidth: .infinity)
+                            .background(.black.opacity(0.000001))
+                        Spacer(minLength: 10)
+                        Button{
+                            if zoomInOut < 179.9999{
+                                zoomInOut += 0.001
+                            }
+                        }label: {
+                            Image(systemName: "minus.magnifyingglass")
+                                .padding(10)
+                        }
+                    }
                     //DO NOT CHANGE WTV CODE IS FROM HERE{
                         .gesture(
                             DragGesture()
@@ -107,7 +125,6 @@ struct ContentView: View {
                     
                     //Creates the tab bar
                     TabView{
-                        VStack {
                             // This is shown when the home "Button" is clicked
                             CustomSheetView()// This is the sheets view like buttons
                         //Creates the home button design
