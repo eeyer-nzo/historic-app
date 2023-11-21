@@ -64,7 +64,7 @@ struct ContentView: View {
                                     //BTW you can edit the code but ONLY the one below if u understand whats going on wtv is above DO NOT TOUCH is the sheet movement code.
                                     
                                     //What happens when the sheet goes up
-                                    withAnimation(.snappy){
+                                    withAnimation(){
                                         chkShtTbPos = true
                                         if chkShtTbPos == true{
                                             spacerMnLngth = -300
@@ -79,7 +79,7 @@ struct ContentView: View {
                                             
                                         }
                                     } else { // What happens when sheet goes down
-                                        withAnimation(.snappy){
+                                        withAnimation(){
                                             chkShtTbPos = false
                                             if chkShtTbPos == false{
                                                 spacerMnLngth = 300
@@ -114,7 +114,7 @@ struct ContentView: View {
                             
                         }
                         VStack{
-                            
+                            FavouritesView()
                         }
                         .tabItem {
                             Image(systemName: "star.fill")
