@@ -4,16 +4,17 @@ import MapKit
 
 //IDK someone fill this in
 struct MapView: UIViewRepresentable {
+    @Binding var zoomInOut: Double
     func makeUIView(context: Context) -> MKMapView {
         MKMapView()
     }
     //Map details
     func updateUIView(_ uiView: MKMapView, context: Context) {
         let coordinate = CLLocationCoordinate2D(latitude: 1.2540, longitude: 103.8234)
-        let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        let span = MKCoordinateSpan(latitudeDelta: zoomInOut, longitudeDelta: zoomInOut)
         let region = MKCoordinateRegion(center: coordinate, span: span)
         uiView.setRegion(region, animated: true)
-        
+            
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         annotation.title = "Sentosa"
@@ -32,14 +33,17 @@ struct ContentView: View {
     @State private var chkShtTbPos = false
     @State private var spacerMnLngth: CGFloat = 300
     @State private var showFav = false
+    @State private var zoomInOut = 0.001
     
     
     var body: some View {
         //Everything on screen starts here{
         
         ZStack {
-            MapView()
-                .edgesIgnoringSafeArea(.all)
+            
+            MapView(zoomInOut: $zoomInOut)
+                .edgesIgnoringSafeArea(.top)
+            
             VStack{
                 
                 VStack(spacing: 0) {
@@ -64,7 +68,9 @@ struct ContentView: View {
                                     //BTW you can edit the code but ONLY the one below if u understand whats going on wtv is above DO NOT TOUCH is the sheet movement code.
                                     
                                     //What happens when the sheet goes up
-                                    withAnimation(){
+                                    
+                                    withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
+                                        
                                         chkShtTbPos = true
                                         if chkShtTbPos == true{
                                             spacerMnLngth = -300
@@ -74,12 +80,15 @@ struct ContentView: View {
                                         withAnimation {
                                             // This controls how high the sheet goes up
                                             sheetPosition =  -UIScreen.main.bounds.height
-                                            + 525
+                                            + 560
                                             showSheet = false
                                             
                                         }
                                     } else { // What happens when sheet goes down
-                                        withAnimation(){
+                                        
+                                        withAnimation(.bouncy){
+                                            //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too
+                                            
                                             chkShtTbPos = false
                                             if chkShtTbPos == false{
                                                 spacerMnLngth = 300
@@ -100,29 +109,23 @@ struct ContentView: View {
                     TabView{
                         VStack {
                             // This is shown when the home "Button" is clicked
-                            NavigationStack {
-                                CustomSheetView()// This is the sheets view like buttons
-                                //The nav title is honestly redundant but lets just leave it
-                                    .navigationTitle("Locations")
-                            }
-                        }
+                            CustomSheetView()// This is the sheets view like buttons
                         //Creates the home button design
-                        
                         .tabItem {
-                            Image(systemName: "house")
-                            Text("Home")
-                            
+                            Label("Home", systemImage: "house")
                         }
-                        VStack{
-                            FavouritesView()
-                        }
+                        FavouritesView()
                         .tabItem {
-                            Image(systemName: "star.fill")
-                            Text("Favourites")
+                            Label("Favourites", systemImage: "star.fill")
                             
                         }
                         
                     }
+                    .gesture(
+                                        DragGesture().onChanged { _ in
+                                            // Do nothing on drag to prevent tab movement
+                                        }
+                                    )
                     // The spacer 🎵 push and pull like a magnet do 🎵 the Tab Bar
                     Spacer(minLength: spacerMnLngth)
                 }
@@ -138,44 +141,48 @@ struct ContentView: View {
 
 //Edits everthing displayed on the sheet{
 struct CustomSheetView: View {
-    let names = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat"]
+    let names = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
     @State private var searchText = ""
     var body: some View {
         
         NavigationStack {
             List {
                 ForEach(searchResults, id: \.self) { name in
-                    
+                     
                     NavigationLink {
-                        
-                        Image("monkey")
-                        HStack {
-                            Text(name)
-                                .font(.system(size: 24))
-                                .bold()
-                            Text("200km")
-                                .font(.system(size: 12))
-                            Button {
-                                //placeholder text, its supposed to put the location into favourites
-                                print("favourite!")
-                            } label: {
-                                Label(" ", systemImage: "heart.circle")
+                        ScrollView{
+                            Image("monkey")
+                            HStack {
+                                Text(name)
+                                    .font(.system(size: 24))
+                                    .bold()
+                                Text("200km")
+                                    .font(.system(size: 12))
+                                Button {
+                                    //placeholder text, its supposed to put the location into favourites
+                                    print("favourite!")
+                                } label: {
+                                    Label(" ", systemImage: "heart.circle")
                                     
+                                }
+                                
                             }
-                            
+                            HStack {
+                                Text("2 Fusionopolis Way, Singapore 138634")
+                                    .font(.system(size: 17))
+                                    .bold()
+                                Image(systemName: "location.circle.fill")
+                            }
+                            Text("blablablablabla something about history idk extend this thing alot cookie monster chicken nugget french fry onion ring upsize coca cola zero sugar two plus two equals to four")
+                            Spacer()
+                            Text("Nearest MRT Station: one-north (CC23)")
+                            Text("Nearest Bus Services: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10")
+                            Spacer()
                         }
-                        HStack {
-                            Text("2 Fusionopolis Way, Singapore 138634")
-                                .font(.system(size: 17))
-                                .bold()
-                            Image(systemName: "location.circle.fill")
-                        }
-                        Text("blablablablabla something about history idk extend this thing alot cookie monster chicken nugget french fry onion ring upsize coca cola zero sugar two plus two equals to four")
-                        Spacer()
-                        Text("Nearest MRT Station: one-north (CC23)")
-                        Text("Nearest Bus Services: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10")
-                        Spacer()
-                    } label: {
+                    }
+                    
+                //FORBIDDEN TO TOUCH PLS DON'T
+                label: {
                         Text(name)
                         
                     }
