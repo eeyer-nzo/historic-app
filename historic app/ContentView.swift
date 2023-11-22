@@ -31,7 +31,10 @@ struct ContentView: View {
     @State private var tabPos: CGFloat = 0
     //4 The var below, false is when the sheet is down
     @State private var chkShtTbPos = false
-    @State private var spacerMnLngth: CGFloat = 300
+    
+    
+    @State private var isExpanded = false
+    
     @State private var showFav = false
     @State private var zoomInOut = 0.001
     
@@ -44,115 +47,114 @@ struct ContentView: View {
             MapView(zoomInOut: $zoomInOut)
                 .edgesIgnoringSafeArea(.all)
             
-            VStack{
-                
-                VStack(spacing: 0) {
-                    HStack{
-                        Button{
-                            if zoomInOut > 0.0001{
-                                zoomInOut -= 0.001
-                            }
-                        }label: {
-                            Image(systemName: "plus.magnifyingglass")
-                                .padding(10)
-                        }
-                        
-                        HandleBar()
-                            .frame(maxWidth: .infinity)
-                            .background(.black.opacity(0.000001))
-                        Spacer(minLength: 10)
-                        Button{
-                            if zoomInOut < 179.9999{
-                                zoomInOut += 0.001
-                            }
-                        }label: {
-                            Image(systemName: "minus.magnifyingglass")
-                                .padding(10)
-                        }
-                    }
-                    //DO NOT CHANGE WTV CODE IS FROM HERE{
-                    .gesture(
-                        DragGesture()
-                            .onChanged { value in
-                                // Update sheet position based on drag gesture
-                                withAnimation {
-                                    sheetPosition = max(min(value.translation.height, 0), -UIScreen.main .bounds.height)
+            GeometryReader { geometry in
+                VStack {
+                    Spacer()
+                    VStack(spacing: 0) {
+                        HStack{
+                            Button{
+                                if zoomInOut > 0.0001{
+                                    zoomInOut -= 0.001
                                 }
+                            }label: {
+                                Image(systemName: "plus.magnifyingglass")
+                                    .padding(10)
                             }
-                        
-                            .onEnded { value in
-                                // Determine whether to show or hide the sheet based on drag distance
-                                let threshold: CGFloat = -100
-                                
-                                //BTW you can edit the code but ONLY the one below if u understand whats going on wtv is above DO NOT TOUCH is the sheet movement code.
-                                
-                                //What happens when the sheet goes up
-                                
-                                withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
-                                    
-                                    chkShtTbPos = true
-                                    if chkShtTbPos == true{
-                                        spacerMnLngth = -300
-                                    }
+                            
+                            HandleBar()
+                                .frame(maxWidth: .infinity)
+                                .background(.black.opacity(0.000001))
+                            Spacer(minLength: 10)
+                            Button{
+                                if zoomInOut < 179.9999{
+                                    zoomInOut += 0.001
                                 }
-                                if value.translation.height < threshold {
-                                    withAnimation {
-                                        // This controls how high the sheet goes up btw higher value decreases height 不要问
-                                        sheetPosition =  -UIScreen.main.bounds.height
-                                        + 560
-                                        showSheet = false
-                                        
-                                    }
-                                } else { // What happens when sheet goes down
+                            }label: {
+                                Image(systemName: "minus.magnifyingglass")
+                                    .padding(10)
+                            }
+                        }
+                        //DO NOT CHANGE WTV CODE IS FROM HERE{
+                        .gesture(
+                            DragGesture(coordinateSpace: .named("Geometry"))
+                                .onChanged { value in
+                                    // Update sheet position based on drag gesture
+                                    sheetPosition = value.translation.height
+                                }
+                                .onEnded { value in
                                     
-                                    withAnimation(.bouncy){
-                                        //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too
+                                    // Determine whether to show or hide the sheet based on drag distance
+                                    let threshold: CGFloat = -100
+                                    
+                                    //BTW you can edit the code but ONLY the one below if u understand whats going on wtv is above DO NOT TOUCH is the sheet movement code.
+                                    
+                                    //What happens when the sheet goes up
+                                    
+                                    withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
                                         
-                                        chkShtTbPos = false
-                                        if chkShtTbPos == false{
-                                            spacerMnLngth = 300
+                                        chkShtTbPos = true
+                                        if chkShtTbPos == true{
+                                            isExpanded = true
+                                            sheetPosition = 0
                                         }
                                     }
-                                    
-                                    withAnimation {
-                                        sheetPosition = 0
-                                        showSheet = true
+                                    if value.translation.height < threshold {
+                                        withAnimation {
+                                            // This controls how high the sheet goes up btw higher value decreases height 不要问
+                                            showSheet = false
+                                            
+                                        }
+                                    } else { // What happens when sheet goes down
+                                        
+                                        withAnimation(.smooth){
+                                            //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too
+                                            
+                                            chkShtTbPos = false
+                                            if chkShtTbPos == false{
+                                                isExpanded = false
+                                                sheetPosition = 0
+                                            }
+                                        }
+                                        
+                                        withAnimation {
+                                            sheetPosition = 0
+                                            showSheet = true
+                                        }
+                                        
                                     }
+                                }
+                            
+                        )// }TO HERE its basically a .gesture code with a super long parameter details inside
+                        
+                        //Creates the tab bar
+                        TabView{
+                            // This is shown when the home "Button" is clicked
+                            CustomSheetView()// This is the sheets view like buttons
+                            
+                            //Creates the home button design
+                                .tabItem {
+                                    Label("Home", systemImage: "house")
+                                }
+                            FavouritesView()
+                                .tabItem {
+                                    Label("Favourites", systemImage: "star.fill")
                                     
                                 }
-                            }
-                        
-                    )// }TO HERE its basically a .gesture code with a super long parameter details inside
-                    
-                    //Creates the tab bar
-                    TabView{
-                        // This is shown when the home "Button" is clicked
-                        CustomSheetView()// This is the sheets view like buttons
-                        
-                        //Creates the home button design
-                            .tabItem {
-                                Label("Home", systemImage: "house")
-                            }
-                        FavouritesView()
-                            .tabItem {
-                                Label("Favourites", systemImage: "star.fill")
-                                
-                            }
-                        
-                    }
-                    .gesture(
-                        DragGesture().onChanged { _ in
-                            // Do nothing on drag to prevent tab movement
+                            
                         }
-                    )
-                    // The spacer 🎵 push and pull like a magnet do 🎵 the Tab Bar
-                    Spacer(minLength: spacerMnLngth)
-                    
-                }
+                        .gesture(
+                            DragGesture().onChanged { _ in
+                                // Do nothing on drag to prevent tab movement
+                            }
+                        )
+                    }
+                    .background(Color(.systemBackground))
+                    .frame(height: geometry.size.height * (isExpanded ? 1 : 0.5) - sheetPosition)
+                }//Vstack ends here
             }
-            //Vstack ends here
-            .background(Color(.systemBackground))
-            .offset(y: sheetPosition + 350)
+            .coordinateSpace(name: "Geometry")
+
+            
             
         }
     }
@@ -173,7 +175,6 @@ struct CustomSheetView: View {
         NavigationStack {
             List {
                 ForEach(searchResults, id: \.self) { name in
-                       
                     VStack {
                         NavigationLink {
                             ScrollView{
@@ -197,14 +198,13 @@ struct CustomSheetView: View {
                                         .bold()
                                     Image(systemName: "location.circle.fill")
                                 }
-                                Text(historicalRelevance[])
+                                Text(historicalRelevance[0])
                                     .padding(80)
                                 Text("Nearest MRT Station: one-north (CC23)")
                                 Text("Nearest Bus Services: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10")
                                 Spacer()
                             }
                         }
-                        
                         //FORBIDDEN TO TOUCH PLS DON'T
                     label: {
                         Text(name)
@@ -213,10 +213,8 @@ struct CustomSheetView: View {
                 }
             }
             .navigationTitle("Locations")
-            
             .searchable(text: $searchText)
-              
-            
+            //Smart search
             var searchResults: [String] {
                 if searchText.isEmpty {
                     return names
