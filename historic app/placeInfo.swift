@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+struct placeInformation{
+    var calling: String
+    var details: String
+    var streetName: String
+    var address: String
+    var postalCode: String
+    var findWeb: String
+    var placePic: String
+}

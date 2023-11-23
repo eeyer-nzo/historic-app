@@ -12,6 +12,7 @@
 		D92625FD2AEC9ADA0068AF08 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92625FC2AEC9ADA0068AF08 /* ContentView.swift */; };
 		D92625FF2AEC9ADE0068AF08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92625FE2AEC9ADE0068AF08 /* Assets.xcassets */; };
 		D92626022AEC9ADE0068AF08 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92626012AEC9ADE0068AF08 /* Preview Assets.xcassets */; };
+		DE7D705D2B0D9D9900ADE74D /* placeInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7D705C2B0D9D9900ADE74D /* placeInfo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +22,7 @@
 		D92625FC2AEC9ADA0068AF08 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D92625FE2AEC9ADE0068AF08 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D92626012AEC9ADE0068AF08 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		DE7D705C2B0D9D9900ADE74D /* placeInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = placeInfo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +57,7 @@
 			children = (
 				D92625FA2AEC9ADA0068AF08 /* historic_appApp.swift */,
 				D92625FC2AEC9ADA0068AF08 /* ContentView.swift */,
+				DE7D705C2B0D9D9900ADE74D /* placeInfo.swift */,
 				42CD37902B0C428400C7033E /* FavouritesView.swift */,
 				D92625FE2AEC9ADE0068AF08 /* Assets.xcassets */,
 				D92626002AEC9ADE0068AF08 /* Preview Content */,
@@ -143,6 +146,7 @@
 				D92625FD2AEC9ADA0068AF08 /* ContentView.swift in Sources */,
 				42CD37912B0C428400C7033E /* FavouritesView.swift in Sources */,
 				D92625FB2AEC9ADA0068AF08 /* historic_appApp.swift in Sources */,
+				DE7D705D2B0D9D9900ADE74D /* placeInfo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
