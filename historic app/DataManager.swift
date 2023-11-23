@@ -65,6 +65,3 @@ if let jsonData = jsonString.data(using: .utf8),
     // Now you have an array of School objects
     print(locations)
 }
-
-
-
