@@ -1,5 +1,6 @@
-import SwiftUI
 import MapKit
+import SwiftUI
+
 //You should know
 
 //IDK someone fill this in
@@ -106,7 +107,7 @@ struct ContentView: View {
                                         }
                                     } else { // What happens when sheet goes down
                                         
-                                        withAnimation(.smooth){
+                                        withAnimation(){
                                             //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too
                                             
                                             chkShtTbPos = false
@@ -116,15 +117,12 @@ struct ContentView: View {
                                             }
                                         }
                                         
-                                        withAnimation {
-                                            sheetPosition = 0
-                                            showSheet = true
-                                        }
                                         
+                                        sheetPosition = 0
+                                        showSheet = true
                                     }
-                                }
-                            
-                        )// }TO HERE its basically a .gesture code with a super long parameter details inside
+                                    
+                                })// }TO HERE its basically a .gesture code with a super long parameter details inside
                         
                         //Creates the tab bar
                         TabView{
@@ -153,81 +151,113 @@ struct ContentView: View {
                 }//Vstack ends here
             }
             .coordinateSpace(name: "Geometry")
-
+            
             
             
         }
     }
     // and ends roughly somewhere here
+    
 }
-
 //Edits everthing displayed on the sheet{
 struct CustomSheetView: View {
-    let names = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
-    let address = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
-    let imageNum = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
-    let historicalRelevance = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
-    let nMRT = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
-    let nSGBs = ["Fort Canning Park", "CHIJMES", "Fort Siloso", "The Battle Box", "Old Changi Hospital", "National Museum", "Lau Pa Sat", "I wonder"]
+    let placeStory = [
+        placeInformation(calling: "Raffles Girls School ", details: "Raffles Girls' School began in 1844 as a girls' department in Singapore Institution (today Raffles Institution), and became independent in 1879. It was located here from 1928 to 1979", streetName: "Stamford Road", address: "Junction of Stamford Road and Armenian Street, beside Lee Kong Chian School of Business, Singapore Management University", postalCode: "178899", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/raffles-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/068-raffles-girls-school/068rafflesgirlsschool.png"),
+        placeInformation(calling: "Singapore Chinese Girls' School", details: "Singapore Chinese Girls' School began in 1899 at Hill Street. It was founded by Straits Chinese pioneers to provide quality education for girls. The school was located here from 1925 to 1994.", streetName: "Emerald Hill Road", address: "", postalCode: "229313", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/singapore-chinese-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/080-singapore-chinese-girls-school/080singaporechinesegirlsschool.png")
+    ]
     @State private var searchText = ""
+    
     var body: some View {
-        
         NavigationStack {
             List {
-                ForEach(searchResults, id: \.self) { name in
+                ForEach(searchResults, id: \.calling) { place in
                     VStack {
                         NavigationLink {
-                            ScrollView{
-                                Image("monkey")
-                                
-                                HStack {
-                                     Text(name)
-                                        .font(.system(size: 24))
-                                        .bold()
-                                    Text("200km")
-                                        .font(.system(size: 12))
-                                    Button {
-                                        //placeholder text, its supposed to put the location into favourites
-                                    } label: {
-                                        Label(" ", systemImage: "heart.circle")
+                            ScrollView {
+                                AsyncImage(url: URL(string: place.placePic)!) { phase in
+                                    switch phase {
+                                    case .empty:
+                                        // Placeholder or loading view
+                                        Text("Loading...")
+                                    case .success(let image):
+                                        image
+                                            .resizable()
+                                            .scaledToFit()
+                                    case .failure:
+                                        // Placeholder or error view
+                                        Text("Failed to load image")
+                                    @unknown default:
+                                        // Placeholder or default view
+                                        Text("Unknown state")
                                     }
                                 }
+                                
+                                //Anything under the pic
                                 HStack {
-                                    Text(address[0])
-                                        .font(.system(size: 17))
+                                    
+                                    Text(place.calling)
+                                        .font(.system(size: 20))
                                         .bold()
-                                    Image(systemName: "location.circle.fill")
+                                        .padding()
+                                    Button{
+                                        
+                                    }label: {
+                                        Image(systemName: "heart.circle")
+                                            .padding(-10)
+                                    }
+                                    Spacer()
                                 }
-                                Text(historicalRelevance[0])
-                                    .padding(80)
-                                Text("Nearest MRT Station: one-north (CC23)")
-                                Text("Nearest Bus Services: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10")
-                                Spacer()
+                                
+                                //                                .padding(.bottom)
+                                HStack {
+                                    Text(place.streetName + " (" + place.postalCode + ")")
+                                        .bold()
+                                        .padding(15)
+                                    Spacer()
+                                }
+                                HStack {
+                                    Spacer(minLength: 18)
+                                    Text(place.address)
+                                        .bold()
+                                        .multilineTextAlignment(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding(-20)
+                                        .padding(.horizontal)
+                                }
+                                Spacer(minLength: 40)
+                                Text(place.details)
+                                    .multilineTextAlignment(.center)
+                                    .padding(20)
+                                Button{
+                                    if let url = URL(string: place.findWeb) {
+                                        UIApplication.shared.open(url)
+                                    }
+                                }label:{
+                                    Text("Find out more")
+                                }
+                                
                             }
-                        }
-                        //FORBIDDEN TO TOUCH PLS DON'T
-                    label: {
-                        Text(name)
+                        } label: {
+                            // The label of the NavigationLink
+                            Text(place.calling)
                         }
                     }
                 }
             }
             .navigationTitle("Locations")
             .searchable(text: $searchText)
-            //Smart search
-            var searchResults: [String] {
-                if searchText.isEmpty {
-                    return names
-                } else {
-                    return names.filter { $0.contains(searchText) }
-                }
-            }
         }
-        
-        
     }
-    
+    //Smart search
+    var searchResults: [placeInformation] {
+        if searchText.isEmpty {
+            return placeStory
+        } else {
+            return placeStory.filter { $0.calling.localizedCaseInsensitiveContains(searchText) }
+        }
+    }
 }
+
 //Its that little grey thing on top of the sheet
 struct HandleBar: View {
     var body: some View {
@@ -244,3 +274,4 @@ struct ContentView_Previews: PreviewProvider {
         //.preferredColorScheme(.dark)
     }
 }
+
