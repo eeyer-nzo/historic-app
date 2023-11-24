@@ -11,15 +11,19 @@ struct MapView: UIViewRepresentable {
     }
     //Map details
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        let coordinate = CLLocationCoordinate2D(latitude: 1.2540, longitude: 103.8234)
-        let span = MKCoordinateSpan(latitudeDelta: zoomInOut, longitudeDelta: zoomInOut)
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        uiView.setRegion(region, animated: true)
         
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = coordinate
-        annotation.title = "Sentosa"
-        uiView.addAnnotation(annotation)
+        for location in loadData() {
+            let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+            let span = MKCoordinateSpan(latitudeDelta: zoomInOut, longitudeDelta: zoomInOut)
+            let region = MKCoordinateRegion(center: coordinate, span: span)
+            uiView.setRegion(region, animated: true)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = coordinate
+            annotation.title = location.name
+            uiView.addAnnotation(annotation)
+        }
+        
     }
 }
 
@@ -91,14 +95,14 @@ struct ContentView: View {
                                     
                                     //What happens when the sheet goes up
                                     
-                                    withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
+//                                    withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
                                         
                                         chkShtTbPos = true
                                         if chkShtTbPos == true{
                                             isExpanded = true
                                             sheetPosition = 0
                                         }
-                                    }
+//                                    }
                                     if value.translation.height < threshold {
                                         withAnimation {
                                             // This controls how high the sheet goes up btw higher value decreases height 不要问
@@ -155,26 +159,32 @@ struct ContentView: View {
             
             
         }
+        .onAppear {
+            loadData()
+        }
     }
     // and ends roughly somewhere here
     
 }
 //Edits everthing displayed on the sheet{
 struct CustomSheetView: View {
-    let placeStory = [
-        placeInformation(calling: "Raffles Girls School ", details: "Raffles Girls' School began in 1844 as a girls' department in Singapore Institution (today Raffles Institution), and became independent in 1879. It was located here from 1928 to 1979", streetName: "Stamford Road", address: "Junction of Stamford Road and Armenian Street, beside Lee Kong Chian School of Business, Singapore Management University", postalCode: "178899", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/raffles-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/068-raffles-girls-school/068rafflesgirlsschool.png"),
-        placeInformation(calling: "Singapore Chinese Girls' School", details: "Singapore Chinese Girls' School began in 1899 at Hill Street. It was founded by Straits Chinese pioneers to provide quality education for girls. The school was located here from 1925 to 1994.", streetName: "Emerald Hill Road", address: "", postalCode: "229313", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/singapore-chinese-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/080-singapore-chinese-girls-school/080singaporechinesegirlsschool.png")
-    ]
+//    let placeStory = [
+//        placeInformation(calling: "Raffles Girls School ", details: "Raffles Girls' School began in 1844 as a girls' department in Singapore Institution (today Raffles Institution), and became independent in 1879. It was located here from 1928 to 1979", streetName: "Stamford Road", address: "Junction of Stamford Road and Armenian Street, beside Lee Kong Chian School of Business, Singapore Management University", postalCode: "178899", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/raffles-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/068-raffles-girls-school/068rafflesgirlsschool.png"),
+//        placeInformation(calling: "Singapore Chinese Girls' School", details: "Singapore Chinese Girls' School began in 1899 at Hill Street. It was founded by Straits Chinese pioneers to provide quality education for girls. The school was located here from 1925 to 1994.", streetName: "Emerald Hill Road", address: "", postalCode: "229313", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/singapore-chinese-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/080-singapore-chinese-girls-school/080singaporechinesegirlsschool.png")
+//    ]
+    
+    let placeStory = loadData()
+    
     @State private var searchText = ""
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(searchResults, id: \.calling) { place in
+                ForEach(searchResults, id: \.name) { place in
                     VStack {
                         NavigationLink {
                             ScrollView {
-                                AsyncImage(url: URL(string: place.placePic)!) { phase in
+                                AsyncImage(url: URL(string: place.website)!) { phase in
                                     switch phase {
                                     case .empty:
                                         // Placeholder or loading view
@@ -195,7 +205,7 @@ struct CustomSheetView: View {
                                 //Anything under the pic
                                 HStack {
                                     
-                                    Text(place.calling)
+                                    Text(place.name)
                                         .font(.system(size: 20))
                                         .bold()
                                         .padding()
@@ -209,12 +219,12 @@ struct CustomSheetView: View {
                                 }
                                 
                                 //                                .padding(.bottom)
-                                HStack {
-                                    Text(place.streetName + " (" + place.postalCode + ")")
-                                        .bold()
-                                        .padding(15)
-                                    Spacer()
-                                }
+//                                HStack {
+//                                    Text(place.streetName + " (" + place.postalCode + ")")
+//                                        .bold()
+//                                        .padding(15)
+//                                    Spacer()
+//                                }
                                 HStack {
                                     Spacer(minLength: 18)
                                     Text(place.address)
@@ -225,11 +235,11 @@ struct CustomSheetView: View {
                                         .padding(.horizontal)
                                 }
                                 Spacer(minLength: 40)
-                                Text(place.details)
+                                Text(place.description)
                                     .multilineTextAlignment(.center)
                                     .padding(20)
                                 Button{
-                                    if let url = URL(string: place.findWeb) {
+                                    if let url = URL(string: place.website) {
                                         UIApplication.shared.open(url)
                                     }
                                 }label:{
@@ -239,7 +249,7 @@ struct CustomSheetView: View {
                             }
                         } label: {
                             // The label of the NavigationLink
-                            Text(place.calling)
+                            Text(place.name)
                         }
                     }
                 }
@@ -249,11 +259,11 @@ struct CustomSheetView: View {
         }
     }
     //Smart search
-    var searchResults: [placeInformation] {
+    var searchResults: [Location] {
         if searchText.isEmpty {
             return placeStory
         } else {
-            return placeStory.filter { $0.calling.localizedCaseInsensitiveContains(searchText) }
+            return placeStory.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
         }
     }
 }
