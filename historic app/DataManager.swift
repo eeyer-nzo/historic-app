@@ -17,6 +17,8 @@ struct Location {
     var postalCode: String
     var website: String
     var imageUrl: String
+    var nearbyBus: String
+    var nearbyMRT: String
 }
 //Define a struct or class to represent the structure of the data.
 
@@ -29,7 +31,7 @@ func loadData() -> [Location] {
         
         for (_, locationData) in jsonDictionary {
             // Ensure that the array has the expected number of elements
-            guard locationData.count == 9,
+            guard locationData.count == 11,
                   let latitude = locationData[0] as? Double,
                   let longitude = locationData[1] as? Double,
                   let name = locationData[2] as? String,
@@ -38,7 +40,9 @@ func loadData() -> [Location] {
                   let locationDetails = locationData[5] as? String,
                   let postalCode = locationData[6] as? String,
                   let website = locationData[7] as? String,
-                  let imageUrl = locationData[8] as? String else {
+                  let imageUrl = locationData[8] as? String,
+                  let nearbyBus = locationData[9] as? String,
+                  let nearbyMRT = locationData[10] as? String else {
                 // Handle the case where the data doesn't match the expected format
                 continue
             }
@@ -52,7 +56,9 @@ func loadData() -> [Location] {
                 locationDetails: locationDetails,
                 postalCode: postalCode,
                 website: website,
-                imageUrl: imageUrl
+                imageUrl: imageUrl,
+                nearbyBus: nearbyBus,
+                nearbyMRT: nearbyMRT
             )
             locations.append(location)
 //            schools.append(school)
