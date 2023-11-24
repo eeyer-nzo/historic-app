@@ -89,20 +89,19 @@ struct ContentView: View {
                                 .onEnded { value in
                                     
                                     // Determine whether to show or hide the sheet based on drag distance
-                                    let threshold: CGFloat = -100
+                                    let threshold: CGFloat = -50
                                     
                                     //BTW you can edit the code but ONLY the one below if u understand whats going on wtv is above DO NOT TOUCH is the sheet movement code.
                                     
                                     //What happens when the sheet goes up
                                     
-//                                    withAnimation(.bouncy){ //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too. Theres another one down at 3 paragraphs.
-                                        
+                                   withAnimation(.smooth){
                                         chkShtTbPos = true
                                         if chkShtTbPos == true{
                                             isExpanded = true
                                             sheetPosition = 0
                                         }
-//                                    }
+                     }
                                     if value.translation.height < threshold {
                                         withAnimation {
                                             // This controls how high the sheet goes up btw higher value decreases height 不要问
@@ -111,8 +110,7 @@ struct ContentView: View {
                                         }
                                     } else { // What happens when sheet goes down
                                         
-                                        withAnimation(){
-                                            //only Xcode 15.0 has snappy animation, so yall will get an error. How to fix: get rid of "(.snappy)" yes the brackets too
+                                        withAnimation(.smooth){
                                             
                                             chkShtTbPos = false
                                             if chkShtTbPos == false{
@@ -168,14 +166,28 @@ struct ContentView: View {
 }
 //Edits everthing displayed on the sheet{
 struct CustomSheetView: View {
-//    let placeStory = [
-//        placeInformation(calling: "Raffles Girls School ", details: "Raffles Girls' School began in 1844 as a girls' department in Singapore Institution (today Raffles Institution), and became independent in 1879. It was located here from 1928 to 1979", streetName: "Stamford Road", address: "Junction of Stamford Road and Armenian Street, beside Lee Kong Chian School of Business, Singapore Management University", postalCode: "178899", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/raffles-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/068-raffles-girls-school/068rafflesgirlsschool.png"),
-//        placeInformation(calling: "Singapore Chinese Girls' School", details: "Singapore Chinese Girls' School began in 1899 at Hill Street. It was founded by Straits Chinese pioneers to provide quality education for girls. The school was located here from 1925 to 1994.", streetName: "Emerald Hill Road", address: "", postalCode: "229313", findWeb: "https://www.roots.gov.sg/places/places-landing/Places/historic-sites/singapore-chinese-girls-school", placePic: "https://roots.sg/~/media/Roots/Images/historic-sites/080-singapore-chinese-girls-school/080singaporechinesegirlsschool.png")
-//    ]
-    
     let placeStory = loadData()
-    
     @State private var searchText = ""
+    
+    func showImage(for place: Location) -> some View {
+            AsyncImage(url: URL(string: place.imageUrl)!) { phase in
+                switch phase {
+                case .empty:
+                    // Placeholder or loading view
+                    Text("Loading...")
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                case .failure(let error):
+                    // Placeholder or error view
+                    Text("Failed to load image: \(error.localizedDescription)")
+                @unknown default:
+                    // Placeholder or default view
+                    Text("Unknown state")
+                }
+            }
+        }
     
     var body: some View {
         NavigationStack {
@@ -184,59 +196,51 @@ struct CustomSheetView: View {
                     VStack {
                         NavigationLink {
                             ScrollView {
-                                AsyncImage(url: URL(string: place.website)!) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        // Placeholder or loading view
-                                        Text("Loading...")
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFit()
-                                    case .failure:
-                                        // Placeholder or error view
-                                        Text("Failed to load image")
-                                    @unknown default:
-                                        // Placeholder or default view
-                                        Text("Unknown state")
-                                    }
-                                }
-                                
+                                showImage(for: place)
                                 //Anything under the pic
                                 HStack {
-                                    
                                     Text(place.name)
                                         .font(.system(size: 20))
                                         .bold()
-                                        .padding()
+                                        .padding(12)
                                     Button{
                                         
                                     }label: {
                                         Image(systemName: "heart.circle")
-                                            .padding(-10)
+                                            .padding(-8)
                                     }
                                     Spacer()
                                 }
-                                
-                                //                                .padding(.bottom)
-//                                HStack {
-//                                    Text(place.streetName + " (" + place.postalCode + ")")
-//                                        .bold()
-//                                        .padding(15)
-//                                    Spacer()
-//                                }
-                                HStack {
-                                    Spacer(minLength: 18)
-                                    Text(place.address)
-                                        .bold()
-                                        .multilineTextAlignment(.leading)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding(-20)
-                                        .padding(.horizontal)
+                                VStack {
+                                    if place.address != "" && place.postalCode != ""{
+                                        HStack {
+                                            Text(place.address + " (" + place.postalCode + ")")
+                                                .bold()
+                                            .padding(12)
+                                            Spacer()
+                                        }
+                                    }else if place.address != ""{
+                                        Text(place.address)
+                                            .bold()
+                                            .padding(12)
+                                    }else if place.postalCode != ""{
+                                        Text(place.postalCode)
+                                            .bold()
+                                            .padding(12)
+                                    }
+                                    if place.address != place.locationDetails{
+                                        Text(place.locationDetails)
+                                            .bold()
+                                            .multilineTextAlignment(.leading)
+                                            //.frame(maxWidth: .infinity, alignment: .leading)
+                                            .padding(8)
+                                            //.padding(.horizontal)
+                                    }
                                 }
+                                
                                 Spacer(minLength: 40)
                                 Text(place.description)
-                                    .multilineTextAlignment(.center)
+                                    .multilineTextAlignment(.leading)
                                     .padding(20)
                                 Button{
                                     if let url = URL(string: place.website) {

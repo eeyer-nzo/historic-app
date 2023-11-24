@@ -13,7 +13,7 @@
 		D92625FD2AEC9ADA0068AF08 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D92625FC2AEC9ADA0068AF08 /* ContentView.swift */; };
 		D92625FF2AEC9ADE0068AF08 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92625FE2AEC9ADE0068AF08 /* Assets.xcassets */; };
 		D92626022AEC9ADE0068AF08 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D92626012AEC9ADE0068AF08 /* Preview Assets.xcassets */; };
-		D92A6C1C2B105F5600DDDE97 /* data.json in Resources */ = {isa = PBXBuildFile; fileRef = D92A6C1B2B105F5600DDDE97 /* data.json */; };
+		DECCD5B02B1062AF00315B00 /* data v5.json in Resources */ = {isa = PBXBuildFile; fileRef = DECCD5AF2B1062AF00315B00 /* data v5.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,7 +24,7 @@
 		D92625FC2AEC9ADA0068AF08 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D92625FE2AEC9ADE0068AF08 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D92626012AEC9ADE0068AF08 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		D92A6C1B2B105F5600DDDE97 /* data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = data.json; path = ../../../../Desktop/data.json; sourceTree = "<group>"; };
+		DECCD5AF2B1062AF00315B00 /* data v5.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "data v5.json"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +41,7 @@
 		D92625EE2AEC9ADA0068AF08 = {
 			isa = PBXGroup;
 			children = (
-				D92A6C1B2B105F5600DDDE97 /* data.json */,
+				DECCD5AF2B1062AF00315B00 /* data v5.json */,
 				D92625F92AEC9ADA0068AF08 /* historic app */,
 				D92625F82AEC9ADA0068AF08 /* Products */,
 			);
@@ -135,7 +135,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D92626022AEC9ADE0068AF08 /* Preview Assets.xcassets in Resources */,
-				D92A6C1C2B105F5600DDDE97 /* data.json in Resources */,
+				DECCD5B02B1062AF00315B00 /* data v5.json in Resources */,
 				D92625FF2AEC9ADE0068AF08 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -13,7 +13,9 @@ struct Location {
     var name: String
     var description: String
     var address: String
+    //Was Street Name
     var locationDetails: String
+    //Was adress 
     var postalCode: String
     var website: String
     var imageUrl: String
@@ -24,7 +26,7 @@ struct Location {
 
 // apparently the presence of single quotes (') which is a special character should be replaced by \\u{2019}
 func loadData() -> [Location] {
-    if let jsonData = try? Data(contentsOf: Bundle.main.url(forResource: "data", withExtension: "json")!),
+    if let jsonData = try? Data(contentsOf: Bundle.main.url(forResource: "data v5", withExtension: "json")!),
        let jsonDictionary = try? JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: [Any]] {
         
         var locations: [Location] = []
