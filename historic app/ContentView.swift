@@ -193,10 +193,10 @@ struct CustomSheetView: View {
                                         .bold()
                                         .padding(12)
                                     Button{
-                                        if let selectedPlace = results.first(where: { $0.name == place.name }) {
-                                                favLocations.append(selectedPlace.name)
-                                            }
-                                        
+                                        if let selectedPlace = results.first(where: { $0.name == place.name }),
+                                                                              !favLocations.contains(selectedPlace.name) {
+                                                                               favLocations.append(selectedPlace.name)
+                                                                           }
                                     }label: {
                                         Image(systemName: "heart.circle")
                                             .padding(-8)
