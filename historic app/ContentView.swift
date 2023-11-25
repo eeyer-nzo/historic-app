@@ -36,8 +36,7 @@ struct ContentView: View {
     @State private var tabPos: CGFloat = 0
     //4 The var below, false is when the sheet is down
     @State private var chkShtTbPos = false
-    
-    
+    @State var favLocations = ["Fort Canning Park", "Fort Siloso", "Old Changi Hospital", "National Museum"]
     @State private var isExpanded = false
     
     @State private var showFav = false
@@ -135,7 +134,7 @@ struct ContentView: View {
                                 .tabItem {
                                     Label("Home", systemImage: "house")
                                 }
-                            FavouritesView()
+                            FavouritesView(areas: $favLocations)
                                 .tabItem {
                                     Label("Favourites", systemImage: "star.fill")
                                     
@@ -189,10 +188,19 @@ struct CustomSheetView: View {
             }
         }
     
+    func smartSearch() -> [Location] {
+            if searchText.isEmpty {
+                return placeStory
+            } else {
+                return placeStory.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
+            }
+        }
+    
     var body: some View {
         NavigationStack {
             List {
-                ForEach(searchResults, id: \.name) { place in
+                let results = smartSearch()
+                ForEach(results, id: \.name) { place in
                     VStack {
                         NavigationLink {
                             ScrollView {
@@ -204,6 +212,9 @@ struct CustomSheetView: View {
                                         .bold()
                                         .padding(12)
                                     Button{
+                                        if let selectedPlace = results.first(where: { $0.name == place.name }) {
+                                                favLocations.append(selectedPlace.name)
+                                            }
                                         
                                     }label: {
                                         Image(systemName: "heart.circle")
@@ -211,14 +222,25 @@ struct CustomSheetView: View {
                                     }
                                     Spacer()
                                 }
+                                
                                 VStack {
-                                    if place.address != "" && place.postalCode != ""{
-                                        HStack {
-                                            Text(place.address + " (" + place.postalCode + ")")
+                                    if place.address != place.locationDetails{
+                                    
+                                        if place.address != "" && place.postalCode != ""{
+                                            HStack{           Text(place.address + " (" + place.postalCode + ")")
+                                                    .bold()
+                                                    .padding(12)
+                                                Spacer()
+                                            }
+                                            
+                                            HStack {
+                                                Spacer(minLength: 4)
+                                                Text(place.locationDetails)
+                                                    .multilineTextAlignment(.leading)
                                                 .bold()
-                                            .padding(12)
-                                            Spacer()
-                                        }
+                                                Spacer()
+                                                
+                                            }
                                     }else if place.address != ""{
                                         Text(place.address)
                                             .bold()
@@ -227,14 +249,7 @@ struct CustomSheetView: View {
                                         Text(place.postalCode)
                                             .bold()
                                             .padding(12)
-                                    }
-                                    if place.address != place.locationDetails{
-                                        Text(place.locationDetails)
-                                            .bold()
-                                            .multilineTextAlignment(.leading)
-                                            //.frame(maxWidth: .infinity, alignment: .leading)
-                                            .padding(8)
-                                            //.padding(.horizontal)
+                                        }
                                     }
                                 }
                                 
@@ -242,6 +257,10 @@ struct CustomSheetView: View {
                                 Text(place.description)
                                     .multilineTextAlignment(.leading)
                                     .padding(20)
+                                Text("Nearest Bus Services: \(place.nearbyBus)")
+                                                                    .padding(20)
+                                                                Text("Nearest MRT: \(place.nearbyMRT)")
+                                                                    .padding(20)
                                 Button{
                                     if let url = URL(string: place.website) {
                                         UIApplication.shared.open(url)
@@ -262,14 +281,7 @@ struct CustomSheetView: View {
             .searchable(text: $searchText)
         }
     }
-    //Smart search
-    var searchResults: [Location] {
-        if searchText.isEmpty {
-            return placeStory
-        } else {
-            return placeStory.filter { $0.name.localizedCaseInsensitiveContains(searchText) }
-        }
-    }
+    
 }
 
 //Its that little grey thing on top of the sheet
