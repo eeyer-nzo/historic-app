@@ -15,7 +15,7 @@ struct FavouritesView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(areas, id: \.self) { area in
+                ForEach(searchResults, id: \.self) { area in
                     NavigationLink(destination: FavoriteDetailView(area: area)) {
                         Text(area)
                     }
@@ -46,6 +46,6 @@ struct FavouritesView: View {
 
 struct FavouritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavouritesView(areas: .constant(["pi"]))
+        FavouritesView(areas: .constant([]))
     }
 }

@@ -1,29 +1,48 @@
 import MapKit
 import SwiftUI
+import CoreLocation
 
-//You should know
-
-//IDK someone fill this in
-struct MapView: UIViewRepresentable {
+struct MapView: UIViewControllerRepresentable {
     @Binding var zoomInOut: Double
-    func makeUIView(context: Context) -> MKMapView {
-        MKMapView()
+    let locationManager: CLLocationManager
+
+    class Coordinator: NSObject, MKMapViewDelegate {
+        var parent: MapView
+
+        init(parent: MapView) {
+            self.parent = parent
+        }
     }
-    //Map details
-    func updateUIView(_ uiView: MKMapView, context: Context) {
-        
+
+    func makeCoordinator() -> Coordinator {
+        return Coordinator(parent: self)
+    }
+
+    func makeUIViewController(context: Context) -> UIViewController {
+        let viewController = UIViewController()
+        let mapView = MKMapView()
+        mapView.showsUserLocation = true
+        mapView.delegate = context.coordinator
+        viewController.view = mapView
+
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
+        let mapView = uiViewController.view as! MKMapView
+        mapView.delegate = context.coordinator
+
         for location in loadData() {
             let coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
             let span = MKCoordinateSpan(latitudeDelta: zoomInOut, longitudeDelta: zoomInOut)
             let region = MKCoordinateRegion(center: coordinate, span: span)
-            uiView.setRegion(region, animated: true)
-            
+            mapView.setRegion(region, animated: true)
+
             let annotation = MKPointAnnotation()
             annotation.coordinate = coordinate
             annotation.title = location.name
-            uiView.addAnnotation(annotation)
+            mapView.addAnnotation(annotation)
         }
-        
     }
 }
 
@@ -42,13 +61,14 @@ struct ContentView: View {
     @State private var showFav = false
     @State private var zoomInOut = 0.001
     
-    
+    @State private var locationManager = CLLocationManager()
+
     var body: some View {
         //Everything on screen starts here{
         
         ZStack {
             
-            MapView(zoomInOut: $zoomInOut)
+            MapView(zoomInOut: $zoomInOut, locationManager: locationManager)
                 .edgesIgnoringSafeArea(.all)
             
             GeometryReader { geometry in
@@ -135,14 +155,17 @@ struct ContentView: View {
             .coordinateSpace(name: "Geometry")
             
             
-            
+                    
         }
         .onAppear {
             loadData()
+            requestLocationPermission()
         }
     }
     // and ends roughly somewhere here
-    
+    private func requestLocationPermission() {
+           locationManager.requestWhenInUseAuthorization()
+       }
 }
 //Edits everthing displayed on the sheet{
 struct CustomSheetView: View {
