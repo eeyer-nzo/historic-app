@@ -10,15 +10,14 @@ import SwiftUI
 struct FavouritesView: View {
     @Binding var areas: [String]
     @State private var searchText = ""
-    
+
     var body: some View {
-            NavigationStack {
-            
+        NavigationStack {
             List {
-                ForEach(searchResults, id: \.self) { area in
+                ForEach(areas, id: \.self) { area in
                     NavigationLink(destination: FavoriteDetailView(area: area)) {
-                            Text(area)
-                        }
+                        Text(area)
+                    }
                 }
             }
             .navigationTitle("Favourites")
@@ -37,7 +36,7 @@ struct FavouritesView: View {
 
 struct FavouritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavouritesView(areas: )
+        FavouritesView(areas: .constant(["Sample Location 1", "Sample Location 2"]))
     }
 }
-
+  

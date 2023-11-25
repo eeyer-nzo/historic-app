@@ -128,7 +128,7 @@ struct ContentView: View {
                         //Creates the tab bar
                         TabView{
                             // This is shown when the home "Button" is clicked
-                            CustomSheetView()// This is the sheets view like buttons
+                            CustomSheetView(favLocations: $favLocations)// This is the sheets view like buttons
                             
                             //Creates the home button design
                                 .tabItem {
@@ -167,7 +167,7 @@ struct ContentView: View {
 struct CustomSheetView: View {
     let placeStory = loadData()
     @State private var searchText = ""
-    
+    @Binding var favLocations: [String]
     func showImage(for place: Location) -> some View {
             AsyncImage(url: URL(string: place.imageUrl)!) { phase in
                 switch phase {
