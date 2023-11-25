@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct FavouritesView: View {
     @Binding var areas: [String]
@@ -19,12 +20,21 @@ struct FavouritesView: View {
                         Text(area)
                     }
                 }
+                .onDelete(perform: deleteArea)
             }
             .navigationTitle("Favourites")
+            .toolbar {
+                // Add the EditButton to enable editing mode
+                EditButton()
+            }
         }
         .searchable(text: $searchText)
     }
-    
+
+    func deleteArea(at offsets: IndexSet) {
+        areas.remove(atOffsets: offsets)
+    }
+
     var searchResults: [String] {
         if searchText.isEmpty {
             return areas
@@ -36,7 +46,6 @@ struct FavouritesView: View {
 
 struct FavouritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavouritesView(areas: .constant(["Sample Location 1", "Sample Location 2"]))
+        FavouritesView(areas: .constant(["pi"]))
     }
 }
-  

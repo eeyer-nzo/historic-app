@@ -36,7 +36,7 @@ struct ContentView: View {
     @State private var tabPos: CGFloat = 0
     //4 The var below, false is when the sheet is down
     @State private var chkShtTbPos = false
-    @State var favLocations = ["Fort Canning Park", "Fort Siloso", "Old Changi Hospital", "National Museum"]
+    @State var favLocations: [String] = []
     @State private var isExpanded = false
     
     @State private var showFav = false
@@ -55,29 +55,10 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     VStack(spacing: 0) {
-                        HStack{
-                            Button{
-                                if zoomInOut > 0.0001{
-                                    zoomInOut -= 0.001
-                                }
-                            }label: {
-                                Image(systemName: "plus.magnifyingglass")
-                                    .padding(10)
-                            }
-                            
                             HandleBar()
                                 .frame(maxWidth: .infinity)
                                 .background(.black.opacity(0.000001))
-                            Spacer(minLength: 10)
-                            Button{
-                                if zoomInOut < 179.9999{
-                                    zoomInOut += 0.001
-                                }
-                            }label: {
-                                Image(systemName: "minus.magnifyingglass")
-                                    .padding(10)
-                            }
-                        }
+                           
                         //DO NOT CHANGE WTV CODE IS FROM HERE{
                         .gesture(
                             DragGesture(coordinateSpace: .named("Geometry"))
