@@ -9,22 +9,23 @@ import SwiftUI
 import Foundation
 
 struct FavouritesView: View {
-    @Binding var areas: [String]
+    @EnvironmentObject var viewModel: ViewModel
     @State private var searchText = ""
 
     var body: some View {
         NavigationStack {
             List {
                 ForEach(searchResults, id: \.self) { area in
-                    NavigationLink(destination: FavoriteDetailView(area: area)) {
-                        Text(area)
+                    if let location = viewModel.locations.first(where: { $0.name == area }) {
+                        NavigationLink(destination: FavoriteDetailView(location: location)) {
+                            Text(area)
+                        }
                     }
                 }
                 .onDelete(perform: deleteArea)
             }
             .navigationTitle("Favourites")
             .toolbar {
-                // Add the EditButton to enable editing mode
                 EditButton()
             }
         }
@@ -32,20 +33,21 @@ struct FavouritesView: View {
     }
 
     func deleteArea(at offsets: IndexSet) {
-        areas.remove(atOffsets: offsets)
+        viewModel.favLocations.remove(atOffsets: offsets)
     }
 
     var searchResults: [String] {
         if searchText.isEmpty {
-            return areas
+            return viewModel.favLocations
         } else {
-            return areas.filter { $0.localizedCaseInsensitiveContains(searchText) }
+            return viewModel.favLocations.filter { $0.localizedCaseInsensitiveContains(searchText) }
         }
     }
 }
 
+
 struct FavouritesView_Previews: PreviewProvider {
     static var previews: some View {
-        FavouritesView(areas: .constant([]))
+        FavouritesView()
     }
 }
