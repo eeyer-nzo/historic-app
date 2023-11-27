@@ -82,7 +82,7 @@ struct HandleBar: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-        //.preferredColorScheme(.dark)
+        .preferredColorScheme(.dark)
     }
 }
 

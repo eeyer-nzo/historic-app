@@ -144,6 +144,7 @@ struct LocationsListView: View {
             .navigationTitle("Locations")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText)
+            
         }
     }
     
