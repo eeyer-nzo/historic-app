@@ -129,7 +129,7 @@ struct LocationsListView: View {
                                     .padding(.vertical)
                                 
                                 Link("Find out more",
-                                     destination: URL(string: place.website)!)
+                               destination: URL(string: place.website)!)
                                 .padding(.bottom)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -144,7 +144,6 @@ struct LocationsListView: View {
             .navigationTitle("Locations")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText)
-            
         }
     }
     
